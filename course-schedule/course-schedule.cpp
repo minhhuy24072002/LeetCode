@@ -9,22 +9,18 @@ public:
         for (int i = 0; i < adj[currCourse].size(); i++) 
             if (!mark[adj[currCourse][i]])
                 check |= isCyclic(adj[currCourse][i], adj, mark, prevCourses);
-            else if (prevCourses.count(adj[currCourse][i]) > 0) { 
-                cout << prevCourses.count(adj[currCourse][i]) << ' ' << adj[currCourse][i] << ' ' << currCourse << endl;
-                return true;
-            }
+            else if (prevCourses.count(adj[currCourse][i]) > 0) return true;
         prevCourses.erase(currCourse);
         return check;
     }
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
         vector <int> adj[numCourses];
         map <int, int> mark;
+        set<int> temp;
         for (int i = 0; i < prerequisites.size(); i++) 
             adj[prerequisites[i][1]].push_back(prerequisites[i][0]);
         
         for (int i = 0; i < numCourses; i++) {
-            set<int> temp;
-            cout << temp.count(552) << endl;
             if (isCyclic(i, adj, mark, temp)) return false;
         }
         
