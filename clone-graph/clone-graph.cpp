@@ -21,21 +21,18 @@ public:
 
 class Solution {
 public:
-    map<Node*, Node*> cloneNode;
+    map<Node*, Node*> mark;
     Node* cloneGraph(Node* node) {
         if (node == nullptr) return node;
+        if (mark[node]) return mark[node];
         
-        if (cloneNode.count(node)) {
-            return cloneNode[node];
+        Node* cloneNode = new Node(node -> val);
+        mark[node] = cloneNode;
+        
+        for (int i = 0; i < (node -> neighbors).size(); i++) {
+            (cloneNode -> neighbors).push_back(cloneGraph((node -> neighbors)[i]));
         }
-        
-        Node* newNode = new Node(node -> val);
-        cloneNode[node] = newNode;
-        
-        for (auto neighbor : node -> neighbors) {
-            (newNode -> neighbors).push_back(cloneGraph(neighbor));
-        }
-        
-        return newNode;
+    
+        return cloneNode;
     }
 };
