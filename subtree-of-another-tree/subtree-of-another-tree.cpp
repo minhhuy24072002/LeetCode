@@ -21,13 +21,9 @@ public:
     }
     
     bool isSubtree(TreeNode* root, TreeNode* subRoot) {
-        bool check = false;
         if (root == nullptr || subRoot == nullptr) return false;
         if (root -> val == subRoot -> val)
-            check = isEqual(root, subRoot);
-        
-        if (check)
-            return check;
+            if (isEqual(root, subRoot)) return true;
         
         return isSubtree(root -> left, subRoot) | isSubtree(root -> right, subRoot);
     }
