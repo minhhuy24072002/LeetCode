@@ -1,41 +1,33 @@
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
-        
-        unordered_map <int, int> count;
+        unordered_map<int, int> count;
+        map<pair<int, pair<int, int>>, int> mark;
         vector<vector<int>> res;
+        int size = nums.size(), duplicateTimes;
         
-        map <pair<int, int>, int> mark;
-        int occurTimes;
-        
-        if (nums.size() < 3) return res;
+        if (nums.size() == 0) return res;
         sort(nums.begin(), nums.end());
         
-        for (int i = 0; i < nums.size(); i++) {
-            count[nums[i]]++;
-        }
+        for (int i = 0; i < nums.size(); i++) count[nums[i]]++;
         
-        for (int i = 0; i < nums.size() - 2; i++) {
-            for (int j = i + 1; j < nums.size() - 1; j++) {
-                if (count[-nums[i] - nums[j]] && !mark[{nums[i], nums[j]}] && -nums[i] - nums[j] >= nums[j]) {
-                    occurTimes = 0;
-                    if (nums[i] == -nums[i] - nums[j]) occurTimes++;
-                    if (nums[j] == -nums[i] - nums[j]) occurTimes++;
+        for (int i = 0; i < size - 2; i++) {
+            for (int j = i + 1; j < size - 1; j++) {
+                if (- nums[i] - nums[j] >= nums[j]) {
+                    duplicateTimes = 0;
                     
-                    if (count[-nums[i] - nums[j]] - occurTimes > 0) {
-                        vector<int> temp;
-                        temp.push_back(nums[i]);
-                        temp.push_back(nums[j]);
-                        temp.push_back(-nums[i] - nums[j]);
-                        
-                        if (!mark[{temp[0],temp[1]}]) {
-                            res.push_back(temp);
-                            mark[{temp[0],temp[1]}] = 1;
-                        }
+                    if (nums[i] == - nums[i] - nums[j]) duplicateTimes++;
+                    if (nums[j] == - nums[i] - nums[j]) duplicateTimes++;
+                    if (count[- nums[i] - nums[j]] > duplicateTimes) 
+                        if (!mark[{nums[i], {nums[j], - nums[i] - nums[j]}}]) {
+                        res.push_back(vector<int>{nums[i], nums[j], - nums[i] - nums[j]});
+                        mark[{nums[i], {nums[j], - nums[i] - nums[j]}}] = 1;
                     }
                 }
             }
         }
+        
+        
         
         return res;
     }
