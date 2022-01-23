@@ -12,25 +12,20 @@
 class Solution {
 public:
     int res;
+    unordered_map<int, int> countSum;
     
-    void dfs(TreeNode* currNode, int currSum, vector<int> currPath, int targetSum) {
-        currPath.push_back(currNode -> val);
-        currSum += currNode -> val;
+    void dfs(TreeNode* currNode, int currSum, int targetSum) {
+        countSum[currSum]++;
+        res += countSum[currSum + currNode -> val - targetSum];
         
-        int index = 0, sum = currSum;
-        while (index < currPath.size()) {
-            if (sum == targetSum) res++;
-            sum -= currPath[index];
-            index++;
-        }
-        
-        if (currNode -> left) dfs(currNode -> left, currSum, currPath, targetSum);
-        if (currNode -> right) dfs(currNode -> right, currSum, currPath, targetSum);
+        if (currNode -> left) dfs(currNode -> left, currSum + currNode -> val, targetSum);
+        if (currNode -> right) dfs(currNode -> right, currSum + currNode -> val, targetSum);
+        countSum[currSum]--;
     }
     int pathSum(TreeNode* root, int targetSum) {
         if (root == nullptr) return res;
         vector<int> currPath;
-        dfs(root, 0, currPath, targetSum);
+        dfs(root, 0, targetSum);
         return res;
     }
 };
