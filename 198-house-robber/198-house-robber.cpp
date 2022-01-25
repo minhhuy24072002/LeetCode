@@ -6,17 +6,12 @@ public:
         dp[0] = nums[0];
         
         if (nums.size() > 1) {
-            dp[1] = nums[1];
+            dp[1] = max(nums[0], nums[1]);
             res = max(res, dp[1]);
         }
         
-        if (nums.size() > 2) {
-            dp[2] = nums[0] + nums[2];
-            res = max(res, dp[2]);
-        }
-        
-        for (int i = 3; i < nums.size(); i++) {
-            dp[i] = nums[i] + max(dp[i - 2], dp[i - 3]);
+        for (int i = 2; i < nums.size(); i++) {
+            dp[i] = max(dp[i - 2] + nums[i], dp[i - 1]);
             res = max(res, dp[i]);
         }
         
