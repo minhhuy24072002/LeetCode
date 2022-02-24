@@ -20,7 +20,7 @@ func reverse(x int) int {
     
     if reversedX > math.MaxInt32 || math.MinInt32 > reversedX {
         return 0
-    } else {
-        return reversedX
     }
+    
+    return reversedX
 }
