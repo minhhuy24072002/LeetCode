@@ -1,82 +1,82 @@
 struct Node {
-        Node* pre;
-        Node* next;
-        int key;
-        Node(int x): key(x), pre(NULL), next(NULL) {};
+    int key;
+    int value;
+    Node* prev;
+    Node* next;
+    Node(int x, int y) {
+        key = x;
+        value = y;
+    }
 };
-class LRUCache {
-public:
-    map<int, Node*> key_node;
-    map<int, int> key_val;
-    int cache_capacity;
-    int current_size;
+
+struct LinkedList {
     Node* head;
     Node* tail;
-    
-    void move_to_head(Node* &head, Node* &tail, Node* &node) {
-        if (head == tail && head == nullptr) {
-            head = node;
-            tail = node;
-            return;
-        }
-        if (node == head) {
-            return;
-        }
-        if (tail == node) {
-            tail = tail->pre;
-        }
-        if (node->pre != nullptr) {
-            node->pre->next = node->next;
-        }
-        if (node->next) {
-            node->next->pre = node->pre;
-        }
-        node->pre = nullptr;
-        node->next = head;
-        head->pre = node;
-        head = node;
-        //cout << head -> key << ' ' << tail -> key << endl;
+    LinkedList() {
+        head = new Node(0, 0);
+        tail = new Node(0, 0);
+        head->next = tail;
+        tail->prev = head;
     }
     
-    void removeTail(Node* &tail) {
-        Node* oldTail = tail;
-        tail = tail->pre;
-        if (tail != nullptr) {
-            tail->next = nullptr;
-        }
-        oldTail->pre = nullptr;
-        if (tail == nullptr) {
-            head = nullptr;
-        }
+    void addFront(Node* node) {
+        head->next->prev = node;
+        node->next = head->next;
+        head->next = node;
+        node->prev = head;
     }
+    
+    void remove(Node* node) {
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+        node->next = nullptr;
+        node->prev = nullptr;
+    }
+};
+
+class LRUCache {
+public:
+    unordered_map<int, Node*> key_node;
+    int cacheCapacity;
+    int cacheSize;
+    LinkedList cache;
     
     LRUCache(int capacity) {
-        cache_capacity = capacity;
-        current_size = 0;
-        head = nullptr;
-        tail = nullptr;
+        cacheCapacity = capacity;
+        cacheSize = 0;
+        cache = LinkedList();
     }
     
     int get(int key) {
-        if (key_node[key] == nullptr) {
+        if (key_node.find(key) == key_node.end()) {
             return -1;
         }
-        move_to_head(head, tail, key_node[key]);
-        return key_val[key];
+        
+        Node* tempNode = key_node[key];
+        cache.remove(key_node[key]);
+        cache.addFront(tempNode);
+        
+        return tempNode->value;
     }
     
     void put(int key, int value) {
-        if (key_node[key] == nullptr) {
-            if (cache_capacity == current_size) {
-                key_node[tail->key] = nullptr;
-                removeTail(tail);
-                current_size--;
-            }
-            key_node[key] = new Node(key);
-            current_size++;
+        if (key_node.find(key) != key_node.end()) {
+            key_node[key]->value = value;
+            Node* tempNode = key_node[key];
+            cache.remove(key_node[key]);
+            cache.addFront(tempNode);
+            return;
         }
-        move_to_head(head, tail, key_node[key]);
-        key_val[key] = value;
+        if (cacheSize == cacheCapacity) {
+            Node* tempNode = cache.tail->prev;
+            key_node.erase(tempNode->key);
+            cache.remove(cache.tail->prev);
+            cacheSize--;
+        }
+        Node* newNode = new Node(key, value);
+        key_node[key] = newNode;
+        cache.addFront(newNode);
+        cacheSize++;
     }
 };
 
