@@ -1,32 +1,28 @@
 class FreqStack {
 public:
-    map<int, stack<int>> fStack;
     unordered_map<int, int> freq;
-    
+    unordered_map<int, list<int>> freqList;
+    int maxFreq = 0;
     FreqStack() {
         
     }
     
     void push(int val) {
         freq[val]++;
-        fStack[freq[val]].push(val);
+        maxFreq = max(freq[val], maxFreq);
+        freqList[freq[val]].push_back(val);
     }
     
     int pop() {
-        map<int, stack<int>>::iterator maxFreqElement;
-        maxFreqElement = fStack.end();
-        maxFreqElement--;
-        if (maxFreqElement->second.size() == 0) {
-            fStack.erase(maxFreqElement);
-            maxFreqElement--;
-        }
-        int result = maxFreqElement->second.top();
+        int result = freqList[maxFreq].back();
+        freqList[maxFreq].pop_back();
         freq[result]--;
-        maxFreqElement->second.pop();
+        if (freqList[maxFreq].size() == 0) {
+            maxFreq--;
+        }
         return result;
     }
 };
-
 
 /**
  * Your FreqStack object will be instantiated and called as such:
