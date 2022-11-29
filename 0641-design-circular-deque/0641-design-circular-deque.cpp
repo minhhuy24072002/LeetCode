@@ -11,16 +11,14 @@ public:
         dq = vector<int>(k);
         currentSize = 0;
         front = 0;
-        rear = 0;
+        rear = k - 1;
     }
     
     bool insertFront(int value) {
         if (isFull()) {
             return false;
         }
-        if (!isEmpty() || front != rear) {
-            front = ((front - 1) + capacity) % capacity;
-        }
+        front = ((front - 1) + capacity) % capacity;
         dq[front] = value;
         currentSize++;
         return true;
@@ -30,9 +28,7 @@ public:
         if (isFull()) {
             return false;
         }
-        if (!isEmpty() || front != rear) {
-            rear = (rear + 1) % capacity;
-        }
+        rear = (rear + 1) % capacity;
         dq[rear] = value;
         currentSize++;
         return true;
