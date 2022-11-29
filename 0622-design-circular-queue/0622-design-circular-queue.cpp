@@ -5,20 +5,20 @@ public:
     int front;
     int rear;
     vector<int> qu;
+    
     MyCircularQueue(int k) {
-        qu = vector<int>(k);
         capacity = k;
         currentSize = 0;
         front = 0;
-        rear = -1;
+        rear = k - 1;
+        qu = vector<int>(k);
     }
     
     bool enQueue(int value) {
         if (isFull()) {
             return false;
         }
-        
-        rear = (rear + 1) % capacity; 
+        rear = (rear + 1) % capacity;
         qu[rear] = value;
         currentSize++;
         return true;
@@ -28,7 +28,6 @@ public:
         if (isEmpty()) {
             return false;
         }
-        
         front = (front + 1) % capacity;
         currentSize--;
         return true;
