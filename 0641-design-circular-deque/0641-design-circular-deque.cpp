@@ -4,23 +4,24 @@ public:
     int currentSize;
     int front;
     int rear;
-    vector<int> myDeque;
+    vector<int> dq;
     
     MyCircularDeque(int k) {
         capacity = k;
+        dq = vector<int>(k);
         currentSize = 0;
         front = 0;
-        rear = k - 1;
-        myDeque = vector<int>(k);
+        rear = 0;
     }
     
     bool insertFront(int value) {
         if (isFull()) {
             return false;
         }
-        
-        front = (front - 1 + capacity) % capacity;
-        myDeque[front] = value;
+        if (!isEmpty() || front != rear) {
+            front = ((front - 1) + capacity) % capacity;
+        }
+        dq[front] = value;
         currentSize++;
         return true;
     }
@@ -29,9 +30,10 @@ public:
         if (isFull()) {
             return false;
         }
-        
-        rear = (rear + 1) % capacity;
-        myDeque[rear] = value;
+        if (!isEmpty() || front != rear) {
+            rear = (rear + 1) % capacity;
+        }
+        dq[rear] = value;
         currentSize++;
         return true;
     }
@@ -40,7 +42,6 @@ public:
         if (isEmpty()) {
             return false;
         }
-        
         front = (front + 1) % capacity;
         currentSize--;
         return true;
@@ -50,8 +51,7 @@ public:
         if (isEmpty()) {
             return false;
         }
-        
-        rear = (rear - 1 + capacity) % capacity;
+        rear = ((rear - 1) + capacity) % capacity;
         currentSize--;
         return true;
     }
@@ -60,16 +60,14 @@ public:
         if (isEmpty()) {
             return -1;
         }
-        
-        return myDeque[front];
+        return dq[front];
     }
     
     int getRear() {
         if (isEmpty()) {
             return -1;
         }
-        
-        return myDeque[rear];
+        return dq[rear];
     }
     
     bool isEmpty() {
