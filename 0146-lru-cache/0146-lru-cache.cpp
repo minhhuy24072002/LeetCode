@@ -1,49 +1,55 @@
 class LRUCache {
 public:
-    list<pair<int, int>> cache;
-    unordered_map<int, list<pair<int, int>>::iterator> RUMap;
+    class Block {
+        public:
+            int key;
+            int value;
+            Block(int x, int y) {
+                key = x;
+                value = y;
+            }
+    };
     int cacheCapacity;
-    int cacheSize;
+    int currentSize;
+    list<Block> cache;
+    unordered_map<int, list<Block>::iterator> block;
     
     LRUCache(int capacity) {
         cacheCapacity = capacity;
-        cacheSize = 0;
-    }
-    
-    void insert(int key, int value) {
-        cache.push_back({key, value});
-        RUMap[key] = --cache.end();
-    }
-    
-    void remove(list<pair<int, int>>::iterator it) {
-        RUMap.erase(it->first);
-        cache.erase(it);
+        currentSize = 0;
     }
     
     int get(int key) {
-        if (RUMap.find(key) == RUMap.end()) {
+        if (block.find(key) == block.end()) {
             return -1;
         }
         
-        int result = RUMap[key]->second;
-        remove(RUMap[key]);
-        insert(key, result);
-        return result;
+        Block temp = *block[key];
+        cache.erase(block[key]);
+        cache.push_back(temp);
+        block[key] = cache.end();
+        block[key]--;
+        return temp.value;
     }
     
     void put(int key, int value) {
-        if (RUMap.find(key) != RUMap.end()) {
-            remove(RUMap[key]);
-            insert(key, value);
-            return;
+        if (block.find(key) != block.end()) {
+            cache.erase(block[key]);
+            cache.push_back(Block(key, value));
+            block[key] = cache.end();
+            block[key]--;
+        } else {
+            if (currentSize == cacheCapacity) {
+                Block lastBlock = cache.front();
+                cache.erase(cache.begin());
+                block.erase(lastBlock.key);
+                currentSize--;
+            }
+            cache.push_back(Block(key, value));
+            block[key] = cache.end();
+            block[key]--;
+            currentSize++;
         }
-        
-        if (cacheSize == cacheCapacity) {
-            remove(cache.begin());
-            cacheSize--;
-        }
-        insert(key, value);
-        cacheSize++;
     }
 };
 
