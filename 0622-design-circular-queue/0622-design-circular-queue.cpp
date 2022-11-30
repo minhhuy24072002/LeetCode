@@ -4,14 +4,14 @@ public:
     int currentSize;
     int front;
     int rear;
-    vector<int> qu;
+    vector<int> myQueue;
     
     MyCircularQueue(int k) {
         capacity = k;
         currentSize = 0;
         front = 0;
         rear = k - 1;
-        qu = vector<int>(k);
+        myQueue = vector<int>(k);
     }
     
     bool enQueue(int value) {
@@ -19,7 +19,7 @@ public:
             return false;
         }
         rear = (rear + 1) % capacity;
-        qu[rear] = value;
+        myQueue[rear] = value;
         currentSize++;
         return true;
     }
@@ -27,7 +27,7 @@ public:
     bool deQueue() {
         if (isEmpty()) {
             return false;
-        }
+        } 
         front = (front + 1) % capacity;
         currentSize--;
         return true;
@@ -37,14 +37,14 @@ public:
         if (isEmpty()) {
             return -1;
         }
-        return qu[front];
+        return myQueue[front];
     }
     
     int Rear() {
         if (isEmpty()) {
             return -1;
         }
-        return qu[rear];
+        return myQueue[rear];
     }
     
     bool isEmpty() {
